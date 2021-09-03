@@ -1,6 +1,6 @@
 # PdRSCD
 
-[![Python 3.7](https://img.shields.io/badge/python-3.7+-yellow.svg)](https://www.python.org/downloads/release/python-370/) [![Paddle 2.1.0](https://img.shields.io/badge/paddle-2.1+-red.svg)](https://www.python.org/downloads/release/python-370/) [![License](https://img.shields.io/badge/license-Apache%202.0-orange.svg)](LICENSE) ![GitHub Repo stars](https://img.shields.io/github/stars/geoyee/PdRSCD)
+[![Python 3.7](https://img.shields.io/badge/python-3.7+-yellow.svg)](https://www.python.org/downloads/release/python-370/) [![Paddle 2.1.0](https://img.shields.io/badge/paddle-2.1+-red.svg)](https://www.python.org/downloads/release/python-370/) [![License](https://img.shields.io/badge/license-Apache%202.0-orange.svg)](LICENSE) ![GitHub Repo stars](https://img.shields.io/github/stars/Pd-3S/PdRSCD)
 
 PdRSCD（PaddlePaddle Remote Sensing Change Detection）是一个基于飞桨PaddlePaddle的遥感变化检测的项目，pypi包名为ppcd。目前0.2版本，最新支持图像列表输入的训练和预测，如多期影像、多源影像甚至多期多源影像。可以快速完成分割、变化检测等任务。
 
@@ -80,10 +80,5 @@ sys.path.append('pd-rscd')  # 加载环境变量
 
 ## 相关链接
 
-- github：[https://github.com/geoyee/PdRSCD](https://github.com/geoyee/PdRSCD)
-- gitee：[https://gitee.com/Geoyee/pd-rscd](https://gitee.com/Geoyee/pd-rscd)
+- github：[https://github.com/geoyee/PdRSCD](https://github.com/Pd-3S/PdRSCD)
 - pypi：[https://pypi.org/project/ppcd/](https://pypi.org/project/ppcd/)
-
-## 交流与反馈
-
-Email：Geoyee@yeah.net

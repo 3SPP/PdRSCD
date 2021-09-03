@@ -80,5 +80,5 @@ sys.path.append('pd-rscd')  # 加载环境变量
 
 ## 相关链接
 
-- github：[https://github.com/geoyee/PdRSCD](https://github.com/Pd-3S/PdRSCD)
+- github：[https://github.com/Pd-3S/PdRSCD](https://github.com/Pd-3S/PdRSCD)
 - pypi：[https://pypi.org/project/ppcd/](https://pypi.org/project/ppcd/)

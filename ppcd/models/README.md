@@ -15,7 +15,7 @@
 | DSIFN     | ppcd.models.DSIFN()    | 2                | 1            |
 | STANet    | ppcd.models.STANet()   | 2                | 1            |
 | *CDMI-Net | ppcd.models.CDMINet()  | 2                | 2            |
-| *DTCDSCD  | ppcd.models.CDNet34    | 2                | 3            |
+| *DTCDSCD  | ppcd.models.CDNet34()    | 2                | 3            |
 
 其中上述模型中前5个模型得到的结果均为变化检测图；后2个模型比较特殊，数据组织和训练方式也有所差别，第6个模型以分类的方式进行训练，得到的结果为特征图和分类结果，需要使用阈值等得到变化检测图；第7个模型得到的结果为变化检测图以及两个时段的分割图。
 

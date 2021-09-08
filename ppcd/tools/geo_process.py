@@ -1,8 +1,6 @@
 import os
-import re
-import fnmatch
 import numpy as np
-from PIL import Image
+
 try:
     try:
         from osgeo import gdal
@@ -77,23 +75,44 @@ def save_tif(img, geoinfo, save_path):
         raise ImportError('can\'t import gdal!')
 
 
-def shp2array(shp_file, tif_file):
-    from osgeo import osr
+# # TODO：有点问题
+# def shp2array(shp_file, tif_file):
+#     '''
+#         输入shp和对应的原始影像
+#     '''
+#     from osgeo import osr
 
-    geoimg = gdal.Open(tif_file)
-    trans = geoimg.GetGeoTransform()
-    cols = geoimg.RasterXSize
-    rows = geoimg.RasterYSize
-    mem = gdal.GetDriverByName('MEM')
-    mid_ds = mem.Create('', cols, rows, 1, gdal.GDT_Byte)
-    mid_ds.SetGeoTransform(trans)
-    mid_ds.SetMetadataItem('AREA_OR_POINT', 'Point')
-    mid_ds.GetRasterBand(1).WriteArray(np.ones((rows, cols), dtype=np.bool))
-    srs = osr.SpatialReference()
-    srs.SetWellKnownGeogCS(geoimg.GetProjection())
-    mid_ds.SetProjection(srs.ExportToWkt())
-    mask_ds = gdal.Warp('', mid_ds, format='MEM', cutlineDSName=shp_file)
-    return mask_ds.ReadAsArray()
+#     geoimg = gdal.Open(tif_file)
+#     trans = geoimg.GetGeoTransform()
+#     cols = geoimg.RasterXSize
+#     rows = geoimg.RasterYSize
+#     mid_ds = gdal.GetDriverByName('MEM').Create('', cols, rows, 1, gdal.GDT_Byte)
+#     mid_ds.SetGeoTransform(trans)
+#     mid_ds.SetMetadataItem('AREA_OR_POINT', 'Point')
+#     mid_ds.GetRasterBand(1).WriteArray(np.ones((rows, cols), dtype=np.bool))
+#     srs = osr.SpatialReference()
+#     srs.SetWellKnownGeogCS(geoimg.GetProjection())
+#     mid_ds.SetProjection(srs.ExportToWkt())
+#     mask_ds = gdal.Warp('', mid_ds, format='MEM', cutlineDSName=shp_file)
+#     return mask_ds.ReadAsArray()
+
+
+def shape_to_raster(shapefile, rasterfile, savefile):
+    from osgeo import ogr
+
+    data = gdal.Open(rasterfile, gdal.GA_ReadOnly)
+    x_res = data.RasterXSize
+    y_res = data.RasterYSize
+    shape = ogr.Open(shapefile)
+    layer = shape.GetLayer()
+    targetDataset = gdal.GetDriverByName('GTiff').Create(savefile, x_res, y_res, 3, gdal.GDT_Byte)
+    targetDataset.SetGeoTransform(data.GetGeoTransform())
+    targetDataset.SetProjection(data.GetProjection())
+    band = targetDataset.GetRasterBand(1)
+    NoData_value = -9999
+    band.SetNoDataValue(NoData_value)
+    band.FlushCache()
+    gdal.RasterizeLayer(targetDataset, [1, 2, 3], layer, options=["ATTRIBUTE=Id"])
 
 
 def tif2shp(tif_path):
@@ -101,7 +120,7 @@ def tif2shp(tif_path):
 
     inraster = gdal.Open(tif_path)
     inband = inraster.GetRasterBand(1)
-    prj = osr.SpatialReference()  
+    prj = osr.SpatialReference()
     prj.ImportFromWkt(inraster.GetProjection())
     outshp = tif_path[:-4] + ".shp"  # 矢量输出文件名
     drv = ogr.GetDriverByName("ESRI Shapefile")
@@ -111,6 +130,7 @@ def tif2shp(tif_path):
     Poly_layer = Polygon.CreateLayer(tif_path[:-4], srs=prj, geom_type=ogr.wkbMultiPolygon)
     newField = ogr.FieldDefn('value', ogr.OFTReal)  # 用来存储原始栅格的pixel value
     Poly_layer.CreateField(newField)
-    gdal.FPolygonize(inband, None, Poly_layer, 0)  # 核心函数，执行的就是栅格转矢量操作
+    gdal.Polygonize(inband, None, Poly_layer, 0)  # 核心函数，执行的就是栅格转矢量操作
     Polygon.SyncToDisk() 
     Polygon = None
+    return outshp

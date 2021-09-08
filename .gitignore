@@ -14,6 +14,13 @@ test_img
 *.tiff.ovr
 *.tiff.enp
 *.jpg
+*.shp
+*.shp.xml
+*.sbn
+*.sbx
+*.cpg
+*.dbf
+*.prj
 test.py
 
 output_model

@@ -4,14 +4,15 @@ import paddle
 from tqdm import tqdm
 # from paddle.io import DataLoader
 from ppcd.datasets import DataLoader
-from ppcd.tools import splicing_list, save_tif
+from ppcd.tools import splicing_list, save_tif, tif2shp
 
 
 def Infer(model, 
           infer_data, 
           params_path=None,
           save_img_path=None,
-          threshold=0.5):
+          threshold=0.5,
+          save_shp=False):
     # 数据读取器
     infer_loader = DataLoader(infer_data, batch_size=1)
     # 开始预测
@@ -42,6 +43,8 @@ def Infer(model,
         save_path = os.path.join(save_img_path, (name[0] + '.png'))
         print('[Infer] ' + str(idx + 1) + '/' + str(lens) + ' file_path: ' + save_path)
         cv2.imwrite(save_path, save_img)
+        if save_shp:
+            tif2shp(save_path)
 
 
 # 进行滑框预测
@@ -50,7 +53,8 @@ def Slide_Infer(model,
                 params_path=None,
                 save_img_path=None,
                 threshold=0.5,
-                name='result'):
+                name='result',
+                save_shp=False):
     # 信息修改与读取
     infer_data.out_mode = 'slide'  # 滑框模式
     raw_size = infer_data.raw_size  # 原图大小
@@ -95,3 +99,5 @@ def Slide_Infer(model,
     else:
         save_path = os.path.join(save_img_path, (name + '.png'))
         cv2.imwrite(save_path, fix_img)
+    if save_shp:
+        tif2shp(save_path)
